@@ -1,0 +1,153 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class SCENENAMESceneManager : MonoBehaviour
+{
+
+    public Transform SCENEVARIABLEButton_Container;
+    public GameObject ButtonPrefab;
+    public GameObject Next_Button;
+    public GameObject SCENENAME_Menu_Button;
+    public int GridSize;
+    public int lastSCENEVARIABLE;
+    public List<Sprite> SCENEVARIABLEImages = new List<Sprite>();
+    public List<AudioClip> SCENENAMEounds = new List<AudioClip>();    
+    [HideInInspector]
+    public AudioSource AudioSource;
+    
+
+    private void Awake()
+    {        
+        AudioSource = GetComponent<AudioSource>();
+     
+    }
+
+    void Start()
+    {
+
+        SpawnRandomSCENEVARIABLEButton();
+
+        Next_Button.GetComponent<Button>().onClick.AddListener(delegate
+        {
+            
+
+            foreach (Transform child in SCENEVARIABLEButton_Container)
+            {
+                Destroy(child.gameObject);
+            }
+
+            SpawnRandomSCENEVARIABLEButton();
+
+            Debug.Log("Next!");
+        });
+
+        SCENENAME_Menu_Button.GetComponent<Button>().onClick.AddListener(delegate
+        {
+            Debug.Log("Back to the menu from SCENENAME!");
+            SceneManager.LoadScene("Menu Scene", LoadSceneMode.Single);
+        });
+
+
+
+    }
+
+    public void SpawnRandomSCENEVARIABLEButton()
+    {
+        GameObject button;
+        Transform childText;
+        
+        int buttonCount = 0;
+
+        while (buttonCount < 2) {
+
+            int randomSCENEVARIABLE = Random.Range(0, SCENEVARIABLEImages.Count);
+            Sprite SCENENAMEprite = SCENEVARIABLEImages[randomSCENEVARIABLE];
+            Debug.Log(buttonCount);
+            string SCENEVARIABLEName = SCENENAMEprite.name.Split('_')[0];
+            if ( randomSCENEVARIABLE == lastSCENEVARIABLE)
+            {
+                Debug.Log("duplicate " + randomSCENEVARIABLE + " & " + lastSCENEVARIABLE);
+            }
+            else
+            {
+                Debug.Log(SCENEVARIABLEName);
+                button = Instantiate(SCENEVARIABLEButtonPrefab);
+                button.transform.SetParent(SCENEVARIABLEButton_Container);
+                button.GetComponent<Image>().sprite = SCENENAMEprite;
+                button.GetComponent<Button>().onClick.AddListener(delegate {
+                    Debug.Log("playing " + SCENEVARIABLEName + " sound");
+                    PlaySound(SCENEVARIABLEName);
+                });
+
+                childText = button.transform.GetChild(0);
+                childText.GetComponent<Text>().text = SCENEVARIABLEName;
+                lastSCENEVARIABLE = randomSCENEVARIABLE;
+                buttonCount++;
+            }
+
+                      
+        }
+
+        /*
+        for (int i = 0; i < 3; i++)
+        {
+            int randomSCENEVARIABLE = Random.Range(0, SCENEVARIABLEImages.Count);
+            Sprite SCENENAMEprite = SCENEVARIABLEImages[randomSCENEVARIABLE];
+            Debug.Log(i);
+            string SCENEVARIABLEName = SCENENAMEprite.name.Split('_')[0];
+            Debug.Log(SCENEVARIABLEName);
+            button = Instantiate(ButtonPrefab);
+            button.transform.SetParent(SCENEVARIABLEButton_Container);
+            button.GetComponent<Image>().sprite = SCENENAMEprite;
+            button.GetComponent<Button>().onClick.AddListener(delegate {
+                Debug.Log("playing " + SCENEVARIABLEName + " sound");
+                PlaySound(SCENEVARIABLEName);
+            });
+
+            childText = button.transform.GetChild(0);
+            childText.GetComponent<Text>().text = SCENEVARIABLEName;
+        }
+        */
+
+
+
+    }
+
+    public void SpawnSCENEVARIABLEButtons()
+    {
+        GameObject button;
+        Transform childText;
+
+        foreach (Sprite SCENENAMEprite in SCENEVARIABLEImages)
+        {
+
+            string SCENEVARIABLEName = SCENENAMEprite.name.Split('_')[0];
+
+            button = Instantiate(SCENEVARIABLEButtonPrefab);
+            button.transform.SetParent(SCENEVARIABLEButton_Container);
+            button.GetComponent<Image>().sprite = SCENENAMEprite;
+            button.GetComponent<Button>().onClick.AddListener(delegate {
+                PlaySound(SCENEVARIABLEName);
+            });
+
+            childText = button.transform.GetChild(0);
+            childText.GetComponent<Text>().text = SCENEVARIABLEName;
+
+        }
+    }
+
+    public void PlaySound(string SCENEVARIABLEName)
+    {
+        foreach (AudioClip clip in SCENENAMEounds)
+        {
+            if (clip.name.Split('_')[0] == SCENEVARIABLEName)
+            {
+                this.AudioSource.PlayOneShot(clip);
+            }
+        }
+    }
+}
+

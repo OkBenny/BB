@@ -1,0 +1,16 @@
+sceneSetups:
+- path: Assets/Menu Scene.unity
+  isLoaded: 1
+  isActive: 1
+- path: Assets/Fruits.unity
+  isLoaded: 0
+  isActive: 0
+- path: Assets/Planes.unity
+  isLoaded: 0
+  isActive: 0
+- path: Assets/Trucks.unity
+  isLoaded: 0
+  isActive: 0
+- path: Assets/Animals.unity
+  isLoaded: 0
+  isActive: 0
